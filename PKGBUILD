@@ -6,7 +6,7 @@
 # You may find it convenient to file issues and pull requests there.
 
 pkgname=gnome-shell-extension-coverflow-alt-tab
-pkgver=1.14
+pkgver=1.13
 pkgrel=1
 pkgdesc="Replacement of Alt-Tab, iterates through windows in a cover-flow manner"
 arch=('any')
@@ -31,8 +31,8 @@ package() {
 }
 package_01_locate() {
   msg2 'Locating extension...'
-  cd "$(find -name 'metadata.json' -execdir test -e extension.js \; \
-    -printf '%C@ %h\n' | sort -nr | sed 's/^.* //;q' )"
+  #cd "$(find -name 'metadata.json' -execdir test -e extension.js \; \
+  #  -printf '%C@ %h\n' | sort -nr | sed 's/^.* //;q' )"
   extname=$(grep -Po '(?<="uuid": ")[^"]*' metadata.json)
   destdir="$pkgdir/usr/share/gnome-shell/extensions/$extname"
 }
