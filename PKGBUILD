@@ -40,16 +40,16 @@ package_02_install() {
   find -maxdepth 1 \( -iname '*.js*' -or -iname '*.css' -or -iname '*.ui' \) \
     -exec install -Dm644 -t "$destdir" '{}' +
 }
-package_10_locale() {
-  msg2 'Installing translations...'
-  (
-    cd locale
-    for locale in */
-    do
-      install -Dm644 -t "$pkgdir/usr/share/locale/$locale/LC_MESSAGES" "$locale/LC_MESSAGES"/*.mo
-    done
-  )
-}
+# package_10_locale() {
+#   msg2 'Installing translations...'
+#   (
+#     cd locale
+#     for locale in */
+#     do
+#       install -Dm644 -t "$pkgdir/usr/share/locale/$locale/LC_MESSAGES" "$locale/LC_MESSAGES"/*.mo
+#     done
+#   )
+# }
 if [ -z "$install" ]
 then
   install=gschemas.install
