@@ -1,0 +1,53 @@
+name: Update and Build Package
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron:  '30 2 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: check updates
+        run: |
+          #git Ver
+          git clone https://github.com/dmo60/CoverflowAltTab
+          pushd CoverflowAltTab
+            gitVer=$(git tag | sort -V | tail -n1 | sed 's/v//')
+          popd
+          
+          #local Ver
+          source PKGBUILD
+          
+          #check and upgrade
+          if [ "$gitVer" != "$pkgver" ];then
+            sed -i "s/pkgver=.*/pkgver=${gitVer}/" PKGBUILD
+          else
+            echo "Sem atualiza de versão"
+            echo "SAINDO...."
+            curl -s -H "Authorization: token ${{ secrets.WEBHOOK_TOKEN }}" \
+            -X POST "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel"
+            sleep infinity
+          fi
+      
+      - name: Update github
+        run: |
+          git add --all
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          if [ -n "$(git commit -m "version ${gitVer}" -a | grep "nothing to commit")" ];then exit 0; fi
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+
+      - name: Send Hooks BigLinux Build Package
+        shell: bash
+        run: |
+          curl -X POST -H "Accept: application/json" -H "Authorization: token ${{ secrets.WEBHOOK_TOKEN }}" --data '{"event_type": "${{ github.repository }}", "client_payload": { "branch": "${{ github.ref_name }}", "url": "https://github.com/${{ github.repository }}", "version": "1.2.3"}}' https://api.github.com/repos/BigLinux-Package-Build/build-package/dispatches
