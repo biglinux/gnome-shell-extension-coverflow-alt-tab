@@ -13,7 +13,7 @@ arch=('any')
 url="https://github.com/dmo60/CoverflowAltTab"
 license=('GPL')
 makedepends+=('git')
-source=("git+${url}.git")
+source=("git+${url}")
 for integ in $(get_integlist)
 do
   typeset -n array="${integ}sums"
