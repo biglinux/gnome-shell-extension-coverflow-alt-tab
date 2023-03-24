@@ -6,22 +6,21 @@
 # You may find it convenient to file issues and pull requests there.
 
 pkgname=gnome-shell-extension-coverflow-alt-tab
-pkgver=1.14
+pkgver=1.13
 pkgrel=1
 pkgdesc="Replacement of Alt-Tab, iterates through windows in a cover-flow manner"
 arch=('any')
 url="https://github.com/dmo60/CoverflowAltTab"
 license=('GPL')
-
 makedepends+=('git')
-source+=("${_gitname:=${pkgname%}}::${_giturl:-git+$url}")
+source=("git+${url}.git")
 for integ in $(get_integlist)
 do
   typeset -n array="${integ}sums"
   array+=('SKIP')
 done
-provides+=("$_gitname=$pkgver")
-conflicts+=("$_gitname")
+provides+=(gnome-shell-extension-coverflow-alt-tab)
+conflicts+=(gnome-shell-extension-coverflow-alt-tab-git)
 
 package() {
   for function in $(declare -F | grep -Po 'package_[[:digit:]]+[[:alpha:]_]*$')
