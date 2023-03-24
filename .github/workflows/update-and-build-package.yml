@@ -24,6 +24,11 @@ jobs:
           #local Ver
           source PKGBUILD
           
+          for i in {0..30}; do
+            echo "sleep"
+            sleep 1
+          done
+          
           #check and upgrade
           if [ "$gitVer" != "$pkgver" ];then
             sed -i "s/pkgver=.*/pkgver=${gitVer}/" PKGBUILD
